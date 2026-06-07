@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
-import { FamilyTree } from "./family-tree";
+import { FamilyTreeEnhanced } from "./family-tree-enhanced";
 import { MemberList } from "./member-list";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -84,7 +84,7 @@ export default async function FamilyPage({ params }: { params: Promise<{ slug: s
 
         {/* 族谱树 */}
         <div className="mb-6">
-          <FamilyTree members={members || []} familySlug={slug} />
+          <FamilyTreeEnhanced members={members || []} familySlug={slug} isAdmin={true} />
         </div>
 
         {/* 成员列表 */}
