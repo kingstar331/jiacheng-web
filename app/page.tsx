@@ -14,7 +14,7 @@ export default function Home() {
             <span className="text-xl font-bold text-[#5c4a32]">家承</span>
           </div>
           <div className="flex items-center gap-4">
-            <Link href="/login" className="text-sm text-[#8a7a65] hover:text-[#c8953f] transition-colors">
+            <Link href="/auth/login" className="text-sm text-[#8a7a65] hover:text-[#c8953f] transition-colors">
               登录
             </Link>
             <Link href="/onboarding">
@@ -314,7 +314,7 @@ export default function Home() {
               <ul className="space-y-2 text-sm text-white/60">
                 <li><Link href="/onboarding" className="hover:text-[#c8953f] transition-colors">创建家族</Link></li>
                 <li><Link href="/demo" className="hover:text-[#c8953f] transition-colors">查看示例</Link></li>
-                <li><Link href="/login" className="hover:text-[#c8953f] transition-colors">登录</Link></li>
+                <li><Link href="/auth/login" className="hover:text-[#c8953f] transition-colors">登录</Link></li>
               </ul>
             </div>
             <div>

@@ -66,7 +66,7 @@ export default function JoinPage() {
     
     if (!user) {
       // 未登录，跳转到登录页
-      router.push(`/login?redirect=/join/${code}`);
+      router.push(`/auth/login?redirect=/join/${code}`);
       return;
     }
     
