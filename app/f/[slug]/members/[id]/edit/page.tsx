@@ -39,11 +39,14 @@ export default function EditMemberPage() {
     generation: "1",
     is_living: "true",
     avatar_url: "",
+    parent_id: "",
+    spouse_id: "",
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
   const [stories, setStories] = useState<Story[]>([]);
+  const [familyMembers, setFamilyMembers] = useState<any[]>([]);
 
   useEffect(() => {
     async function loadMember() {
@@ -71,7 +74,22 @@ export default function EditMemberPage() {
           generation: member.generation?.toString() || "1",
           is_living: String(member.is_living),
           avatar_url: member.avatar_url || "",
+          parent_id: member.parent_id || "",
+          spouse_id: member.spouse_id || "",
         });
+        
+        // 加载同家族其他成员（用于关系选择）
+        const { data: allMembers } = await supabase
+          .from("members")
+          .select("id, name, gender, generation")
+          .eq("family_id", member.family_id)
+          .neq("id", id)
+          .order("generation", { ascending: true })
+          .order("name");
+        
+        if (allMembers) {
+          setFamilyMembers(allMembers);
+        }
         
         // 解析 stories JSON
         if (member.stories) {
@@ -113,6 +131,8 @@ export default function EditMemberPage() {
         avatar_url: form.avatar_url || null,
         generation: parseInt(form.generation),
         is_living: form.is_living === "true",
+        parent_id: form.parent_id || null,
+        spouse_id: form.spouse_id || null,
       })
       .eq("id", id);
 
@@ -314,6 +334,58 @@ export default function EditMemberPage() {
                   className="border-[#e8e0d4] focus-visible:ring-[#c8953f]"
                   min={1}
                 />
+              </div>
+
+              {/* 关系设置 */}
+              <div className="rounded-lg border border-[#e8e0d4] bg-[#faf8f3] p-4 space-y-4">
+                <h3 className="text-sm font-medium text-[#5c4a32]">家庭关系</h3>
+                
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label className="text-[#5c4a32] text-xs">父母</Label>
+                    <select
+                      value={form.parent_id}
+                      onChange={(e) => updateField("parent_id", e.target.value)}
+                      className="w-full rounded-md border border-[#e8e0d4] bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c8953f]"
+                    >
+                      <option value="">未设置</option>
+                      {familyMembers
+                        .filter((m) => m.generation <= parseInt(form.generation) - 1)
+                        .map((m) => (
+                          <option key={m.id} value={m.id}>
+                            {m.name}（第{m.generation}代，{m.gender === 1 ? "男" : "女"}）
+                          </option>
+                        ))}
+                    </select>
+                    <p className="text-xs text-[#8a7a65]">
+                      选择父母后，代数会自动关联
+                    </p>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label className="text-[#5c4a32] text-xs">配偶</Label>
+                    <select
+                      value={form.spouse_id}
+                      onChange={(e) => updateField("spouse_id", e.target.value)}
+                      className="w-full rounded-md border border-[#e8e0d4] bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c8953f]"
+                    >
+                      <option value="">未设置</option>
+                      {familyMembers
+                        .filter((m) => {
+                          const myGender = parseInt(form.gender);
+                          return m.generation === parseInt(form.generation) && m.gender !== myGender;
+                        })
+                        .map((m) => (
+                          <option key={m.id} value={m.id}>
+                            {m.name}（第{m.generation}代，{m.gender === 1 ? "男" : "女"}）
+                          </option>
+                        ))}
+                    </select>
+                    <p className="text-xs text-[#8a7a65]">
+                      只能选择同代异性成员
+                    </p>
+                  </div>
+                </div>
               </div>
 
               <div className="space-y-2">
