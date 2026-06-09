@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import { ArrowLeft, Trash2, Plus, BookOpen, X } from "lucide-react";
+import { AvatarUpload } from "@/components/avatar-upload";
 
 interface Story {
   title: string;
@@ -37,6 +38,7 @@ export default function EditMemberPage() {
     stories: "",
     generation: "1",
     is_living: "true",
+    avatar_url: "",
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -68,6 +70,7 @@ export default function EditMemberPage() {
           stories: "",
           generation: member.generation?.toString() || "1",
           is_living: String(member.is_living),
+          avatar_url: member.avatar_url || "",
         });
         
         // 解析 stories JSON
@@ -107,6 +110,7 @@ export default function EditMemberPage() {
         education: form.education || null,
         bio: form.bio || null,
         stories: stories.length > 0 ? JSON.stringify(stories) : null,
+        avatar_url: form.avatar_url || null,
         generation: parseInt(form.generation),
         is_living: form.is_living === "true",
       })
@@ -165,6 +169,15 @@ export default function EditMemberPage() {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
+              {/* 头像上传 */}
+              <div className="flex justify-center py-4">
+                <AvatarUpload
+                  memberId={id}
+                  currentAvatarUrl={form.avatar_url}
+                  onUploadComplete={(url) => updateField("avatar_url", url)}
+                />
+              </div>
+
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label className="text-[#5c4a32]">姓名 *</Label>
