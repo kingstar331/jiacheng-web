@@ -320,8 +320,8 @@ export default function Home() {
             <div>
               <h4 className="text-sm font-semibold text-white mb-4">关于</h4>
               <ul className="space-y-2 text-sm text-white/60">
-                <li><span className="hover:text-[#c8953f] transition-colors cursor-pointer">使用指南</span></li>
-                <li><span className="hover:text-[#c8953f] transition-colors cursor-pointer">隐私政策</span></li>
+                <li><Link href="/beta" className="hover:text-[#c8953f] transition-colors">使用指南</Link></li>
+                <li><Link href="/privacy" className="hover:text-[#c8953f] transition-colors">隐私政策</Link></li>
                 <li><span className="hover:text-[#c8953f] transition-colors cursor-pointer">联系我们</span></li>
               </ul>
             </div>
