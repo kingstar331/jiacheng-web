@@ -10,6 +10,7 @@ import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import { ArrowLeft, Trash2, Plus, BookOpen, X, AlertCircle } from "lucide-react";
 import { AvatarUpload } from "@/components/avatar-upload";
+import { useToast } from "@/components/ui/toast";
 
 interface Story {
   title: string;
@@ -47,6 +48,7 @@ export default function EditMemberPage() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [stories, setStories] = useState<Story[]>([]);
   const [familyMembers, setFamilyMembers] = useState<any[]>([]);
+  const { showToast } = useToast();
 
   useEffect(() => {
     async function loadMember() {
@@ -138,7 +140,9 @@ export default function EditMemberPage() {
 
     if (error) {
       setError(error.message);
+      showToast("保存失败：" + error.message, "error");
     } else {
+      showToast("成员信息已保存", "success");
       router.push(`/f/${slug}/members/${id}`);
       router.refresh();
     }
@@ -156,7 +160,9 @@ export default function EditMemberPage() {
     if (error) {
       setError(error.message);
       setIsDeleting(false);
+      showToast("删除失败：" + error.message, "error");
     } else {
+      showToast("成员已删除", "success");
       router.push(`/f/${slug}`);
       router.refresh();
     }

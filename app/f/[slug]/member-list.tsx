@@ -2,8 +2,9 @@
 
 import { Member } from "@/lib/supabase";
 import Link from "next/link";
-import { User, Plus, Edit3 } from "lucide-react";
+import { Plus, Edit3, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/empty-state";
 
 interface MemberListProps {
   members: Member[];
@@ -33,10 +34,7 @@ export function MemberList({ members, familySlug }: MemberListProps) {
 
       <div className="divide-y divide-[#e8e0d4]">
         {members.length === 0 ? (
-          <div className="px-4 py-8 text-center text-[#8a7a65]">
-            <User className="mx-auto mb-2 h-8 w-8 text-[#c8953f]/30" />
-            <p>还没有成员，点击上方按钮添加</p>
-          </div>
+          <EmptyState type="members" familySlug={familySlug} />
         ) : (
           members.map((member) => (
             <Link

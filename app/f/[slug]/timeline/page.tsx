@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import { ArrowLeft, Calendar, MapPin, User, BookOpen, Plus, X } from "lucide-react";
+import { EmptyState } from "@/components/empty-state";
 
 interface TimelineEvent {
   id?: string;
@@ -347,11 +348,7 @@ export default function TimelinePage() {
 
         {/* 时间轴展示 */}
         {events.length === 0 ? (
-          <div className="text-center py-16">
-            <Calendar className="h-12 w-12 text-[#e8e0d4] mx-auto mb-4" />
-            <p className="text-[#8a7a65]">暂无时间轴事件</p>
-            <p className="text-sm text-[#8a7a65] mt-1">点击上方按钮添加家族大事记</p>
-          </div>
+          <EmptyState type="timeline" familySlug={slug} />
         ) : (
           <div className="relative">
             {/* 中心线 */}

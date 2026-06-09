@@ -6,8 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
-import { ArrowLeft, ImageIcon, Calendar, MapPin, User, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft, Calendar, MapPin, User, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { PhotoUpload } from "@/components/photo-upload";
+import { EmptyState } from "@/components/empty-state";
 
 interface Photo {
   id: string;
@@ -146,11 +147,7 @@ export default function PhotosPage() {
 
         {/* 照片网格 */}
         {photos.length === 0 ? (
-          <div className="text-center py-16">
-            <ImageIcon className="h-12 w-12 text-[#e8e0d4] mx-auto mb-4" />
-            <p className="text-[#8a7a65]">暂无照片</p>
-            <p className="text-sm text-[#8a7a65] mt-1">点击上方按钮上传家族老照片</p>
-          </div>
+          <EmptyState type="photos" familySlug={slug} />
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
             {photos.map((photo, index) => (
