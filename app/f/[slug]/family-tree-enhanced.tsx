@@ -75,9 +75,36 @@ export function FamilyTreeEnhanced({ members, familySlug, isAdmin = false }: Fam
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [draggedNode, setDraggedNode] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [pan, setPan] = useState({ x: 0, y: 0 });
+  // 触摸事件处理（移动端滑动）
+  const [touchStart, setTouchStart] = useState({ x: 0, y: 0 });
+  const [touchPan, setTouchPan] = useState({ x: 0, y: 0 });
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    const touch = e.touches[0];
+    setTouchStart({ x: touch.clientX, y: touch.clientY });
+    setIsDragging(true);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isDragging) return;
+    const touch = e.touches[0];
+    const dx = touch.clientX - touchStart.x;
+    const dy = touch.clientY - touchStart.y;
+    setTouchPan({ x: dx, y: dy });
+    setPan((prev) => ({
+      x: prev.x + dx * 0.5,
+      y: prev.y + dy * 0.5,
+    }));
+    setTouchStart({ x: touch.clientX, y: touch.clientY });
+  };
+
+  const handleTouchEnd = () => {
+    setIsDragging(false);
+    setTouchPan({ x: 0, y: 0 });
+  };
   const [isDragging, setIsDragging] = useState(false);
   const dragStart = useRef({ x: 0, y: 0 });
+  const [pan, setPan] = useState({ x: 0, y: 0 });
 
   // 重新计算代数
   const memberMap = new Map(members.map((m) => [m.id, m]));
@@ -362,6 +389,9 @@ export function FamilyTreeEnhanced({ members, familySlug, isAdmin = false }: Fam
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
       >
         <div
           className="tree-canvas flex justify-center"

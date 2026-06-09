@@ -39,24 +39,41 @@ export default async function FamilyPage({ params }: { params: Promise<{ slug: s
             <span className="text-[#e8e0d4]">/</span>
             <h1 className="text-lg font-semibold text-[#5c4a32]">{family.name}</h1>
           </div>
-          <div className="flex items-center gap-2">
-            <Link href={`/f/${slug}/members`}>
-              <Button variant="ghost" size="sm" className="text-[#8a7a65]">
-                <Users className="mr-1 h-4 w-4" />
-                成员
-              </Button>
-            </Link>
-            <Link href={`/f/${slug}/invite`}>
-              <Button variant="ghost" size="sm" className="text-[#8a7a65]">
-                <Share2 className="mr-1 h-4 w-4" />
-                邀请
-              </Button>
-            </Link>
-            <Link href={`/f/${slug}/settings`}>
-              <Button variant="ghost" size="icon" className="text-[#8a7a65]">
-                <Settings className="h-4 w-4" />
-              </Button>
-            </Link>
+          <div className="flex items-center gap-1">
+            {/* 桌面端完整按钮 */}
+            <div className="hidden sm:flex items-center gap-1">
+              <Link href={`/f/${slug}/members`}>
+                <Button variant="ghost" size="sm" className="text-[#8a7a65]">
+                  <Users className="mr-1 h-4 w-4" />
+                  成员
+                </Button>
+              </Link>
+              <Link href={`/f/${slug}/invite`}>
+                <Button variant="ghost" size="sm" className="text-[#8a7a65]">
+                  <Share2 className="mr-1 h-4 w-4" />
+                  邀请
+                </Button>
+              </Link>
+              <Link href={`/f/${slug}/settings`}>
+                <Button variant="ghost" size="icon" className="text-[#8a7a65]">
+                  <Settings className="h-4 w-4" />
+                </Button>
+              </Link>
+            </div>
+            
+            {/* 移动端简化按钮 */}
+            <div className="flex sm:hidden items-center gap-1">
+              <Link href={`/f/${slug}/members`}>
+                <Button variant="ghost" size="icon" className="text-[#8a7a65] h-9 w-9">
+                  <Users className="h-5 w-5" />
+                </Button>
+              </Link>
+              <Link href={`/f/${slug}/invite`}>
+                <Button variant="ghost" size="icon" className="text-[#8a7a65] h-9 w-9">
+                  <Share2 className="h-5 w-5" />
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </header>
