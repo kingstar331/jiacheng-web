@@ -258,12 +258,12 @@ export function FamilyTreeEnhanced({ members, familySlug, isAdmin = false }: Fam
             {isExpanded ? (
               <>
                 <ChevronDown className="h-3 w-3" />
-                <span>收起 ({member.children.length})</span>
+                <span>收起 ({member.children?.length || 0})</span>
               </>
             ) : (
               <>
                 <ChevronRight className="h-3 w-3" />
-                <span>展开 ({member.children.length})</span>
+                <span>展开 ({member.children?.length || 0})</span>
               </>
             )}
           </button>
@@ -273,7 +273,7 @@ export function FamilyTreeEnhanced({ members, familySlug, isAdmin = false }: Fam
   };
 
   // 递归渲染树
-  const renderTree = (nodes: Member[], level = 0): JSX.Element => {
+  const renderTree = (nodes: Member[], level = 0): React.ReactElement => {
     return (
       <div className={`flex gap-8 ${level > 0 ? "mt-6" : ""}`}>
         {nodes.map((node) => {
@@ -294,7 +294,7 @@ export function FamilyTreeEnhanced({ members, familySlug, isAdmin = false }: Fam
               {renderNodeCard(node)}
 
               {/* 子节点 */}
-              {hasChildren && isExpanded && (
+              {hasChildren && isExpanded && node.children && (
                 <div className="mt-4 relative">
                   {/* 垂直连接线 */}
                   <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-4 bg-[#c8953f]/40" />

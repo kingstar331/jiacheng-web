@@ -35,6 +35,8 @@ export type Member = {
   created_by: string | null
   created_at: string
   updated_at: string
+  // 前端扩展字段
+  children?: Member[]
 }
 
 export type Profile = {
