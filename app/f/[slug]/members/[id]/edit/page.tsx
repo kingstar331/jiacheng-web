@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
-import { ArrowLeft, Trash2, Plus, BookOpen, X } from "lucide-react";
+import { ArrowLeft, Trash2, Plus, BookOpen, X, AlertCircle } from "lucide-react";
 import { AvatarUpload } from "@/components/avatar-upload";
 
 interface Story {
@@ -161,6 +161,46 @@ export default function EditMemberPage() {
       router.refresh();
     }
   };
+
+  // 数据校验
+  const validateForm = (): string[] => {
+    const errors: string[] = [];
+
+    if (!form.name.trim()) {
+      errors.push("姓名不能为空");
+    }
+
+    if (form.birth_year && form.death_year) {
+      const birth = parseInt(form.birth_year);
+      const death = parseInt(form.death_year);
+      if (birth > death) {
+        errors.push("出生年份不能大于逝世年份");
+      }
+      if (birth < 1800) {
+        errors.push("出生年份似乎过早，请检查");
+      }
+      if (death > new Date().getFullYear()) {
+        errors.push("逝世年份不能是未来");
+      }
+    }
+
+    if (form.birth_date && form.death_date) {
+      if (new Date(form.birth_date) > new Date(form.death_date)) {
+        errors.push("出生日期不能晚于逝世日期");
+      }
+    }
+
+    if (form.generation) {
+      const gen = parseInt(form.generation);
+      if (gen < 1 || gen > 20) {
+        errors.push("代数应在 1-20 之间");
+      }
+    }
+
+    return errors;
+  };
+
+  const validationErrors = validateForm();
 
   const updateField = (field: string, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -478,12 +518,25 @@ export default function EditMemberPage() {
                 )}
               </div>
 
+              {/* 校验错误提示 */}
+              {validationErrors.length > 0 && (
+                <div className="p-4 rounded-lg bg-yellow-50 border border-yellow-200 space-y-1">
+                  <div className="flex items-center gap-2">
+                    <AlertCircle className="h-4 w-4 text-yellow-600" />
+                    <span className="text-sm font-medium text-yellow-800">请修正以下问题：</span>
+                  </div>
+                  {validationErrors.map((err, i) => (
+                    <li key={i} className="text-sm text-yellow-700 ml-6">{err}</li>
+                  ))}
+                </div>
+              )}
+
               {error && <p className="text-sm text-red-500">{error}</p>}
 
               <Button
                 type="submit"
                 className="w-full bg-[#c8953f] hover:bg-[#b08435] text-white"
-                disabled={loading}
+                disabled={loading || validationErrors.length > 0}
               >
                 {loading ? "保存中..." : "保存修改"}
               </Button>

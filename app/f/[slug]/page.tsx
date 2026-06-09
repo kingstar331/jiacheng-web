@@ -4,7 +4,7 @@ import { FamilyTreeEnhanced } from "./family-tree-enhanced";
 import { MemberList } from "./member-list";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Settings, Share2, Users, Download, Clock, ImageIcon, MapPin } from "lucide-react";
+import { Settings, Share2, Users, Download, Clock, ImageIcon, MapPin, Upload, Edit3 } from "lucide-react";
 
 export default async function FamilyPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -78,6 +78,12 @@ export default async function FamilyPage({ params }: { params: Promise<{ slug: s
                   导出
                 </Button>
               </Link>
+              <Link href={`/f/${slug}/import`}>
+                <Button variant="ghost" size="sm" className="text-[#8a7a65]">
+                  <Upload className="mr-1 h-4 w-4" />
+                  导入
+                </Button>
+              </Link>
               <Link href={`/f/${slug}/settings`}>
                 <Button variant="ghost" size="icon" className="text-[#8a7a65]">
                   <Settings className="h-4 w-4" />
@@ -115,6 +121,11 @@ export default async function FamilyPage({ params }: { params: Promise<{ slug: s
               <Link href={`/f/${slug}/export`}>
                 <Button variant="ghost" size="icon" className="text-[#8a7a65] h-9 w-9">
                   <Download className="h-5 w-5" />
+                </Button>
+              </Link>
+              <Link href={`/f/${slug}/import`}>
+                <Button variant="ghost" size="icon" className="text-[#8a7a65] h-9 w-9">
+                  <Upload className="h-5 w-5" />
                 </Button>
               </Link>
             </div>
