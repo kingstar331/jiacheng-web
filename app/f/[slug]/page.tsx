@@ -4,7 +4,7 @@ import { FamilyTreeEnhanced } from "./family-tree-enhanced";
 import { MemberList } from "./member-list";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Settings, Share2, Users, Download } from "lucide-react";
+import { Settings, Share2, Users, Download, Clock } from "lucide-react";
 
 export default async function FamilyPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -48,6 +48,12 @@ export default async function FamilyPage({ params }: { params: Promise<{ slug: s
                   成员
                 </Button>
               </Link>
+              <Link href={`/f/${slug}/timeline`}>
+                <Button variant="ghost" size="sm" className="text-[#8a7a65]">
+                  <Clock className="mr-1 h-4 w-4" />
+                  时间轴
+                </Button>
+              </Link>
               <Link href={`/f/${slug}/invite`}>
                 <Button variant="ghost" size="sm" className="text-[#8a7a65]">
                   <Share2 className="mr-1 h-4 w-4" />
@@ -72,6 +78,11 @@ export default async function FamilyPage({ params }: { params: Promise<{ slug: s
               <Link href={`/f/${slug}/members`}>
                 <Button variant="ghost" size="icon" className="text-[#8a7a65] h-9 w-9">
                   <Users className="h-5 w-5" />
+                </Button>
+              </Link>
+              <Link href={`/f/${slug}/timeline`}>
+                <Button variant="ghost" size="icon" className="text-[#8a7a65] h-9 w-9">
+                  <Clock className="h-5 w-5" />
                 </Button>
               </Link>
               <Link href={`/f/${slug}/invite`}>
