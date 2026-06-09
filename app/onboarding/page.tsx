@@ -11,6 +11,35 @@ import { ChevronRight, ChevronLeft, Users, MapPin, BookOpen, Sparkles, Check, Us
 
 type Step = "family" | "founder" | "preview" | "done";
 
+// 金氏家族完整数据
+const JIN_FAMILY_DATA = {
+  name: "金氏家族",
+  slug: "jin-family",
+  origin: "湖北枣阳",
+  description: "聚是一团火，散作满天星",
+  members: [
+    // 第一代
+    { name: "金如香", gender: 1, birth_year: 1931, death_year: 2020, birthplace: "湖北枣阳", current_location: "湖北安陆棠棣镇", occupation: "林业局干部/抗美援朝老兵", bio: "出生于湖北枣阳，原姓周。幼年时逢战乱，成为孤儿，后被金姓人家收养。1950年参加抗美援朝，转业后到棠棣镇林业局工作。", generation: 1, order_in_siblings: 0, is_living: false },
+    { name: "蒋忠英", gender: 2, birth_year: 1933, death_year: 2015, birthplace: "湖北安陆", current_location: "湖北安陆棠棣镇", occupation: "家庭主妇", bio: "金如香妻子，安陆本地人。", generation: 1, order_in_siblings: 1, is_living: false },
+    // 第二代
+    { name: "金道武", gender: 1, birth_year: 1957, birthplace: "湖北安陆棠棣镇", current_location: "湖北安陆", occupation: "个体户（粮食收购）", bio: "金如香长子。从事粮食收购生意。", generation: 2, order_in_siblings: 0, is_living: true },
+    { name: "潘云芳", gender: 2, birth_year: 1958, birthplace: "湖北安陆", current_location: "湖北安陆", occupation: "家庭主妇", bio: "金道武妻子。", generation: 2, order_in_siblings: 1, is_living: true },
+    { name: "金道富", gender: 1, birth_year: 1960, birthplace: "湖北安陆棠棣镇", current_location: "湖北安陆", occupation: "待补充", bio: "金如香次子。", generation: 2, order_in_siblings: 2, is_living: true },
+    { name: "金道莲", gender: 2, birth_year: 1962, birthplace: "湖北安陆棠棣镇", current_location: "湖北安陆", occupation: "待补充", bio: "金如香女儿。", generation: 2, order_in_siblings: 3, is_living: true },
+    { name: "金道贵", gender: 1, birth_year: 1965, birthplace: "湖北安陆棠棣镇", current_location: "湖北安陆", occupation: "待补充", bio: "金如香三子。", generation: 2, order_in_siblings: 4, is_living: true },
+    // 第三代
+    { name: "金亮", gender: 1, birth_year: 1981, birthplace: "湖北安陆棠棣镇", current_location: "四川成都", occupation: "待补充", bio: "金道武长子。现居成都，育有两女。", generation: 3, order_in_siblings: 0, is_living: true },
+    { name: "周丽娟", gender: 2, birth_year: 1982, birthplace: "四川", current_location: "四川成都", occupation: "待补充", bio: "金亮妻子。", generation: 3, order_in_siblings: 1, is_living: true },
+    { name: "金星", gender: 2, birth_year: 1983, birthplace: "湖北安陆棠棣镇", current_location: "广东深圳", occupation: "待补充", bio: "金道武女儿。现居深圳。", generation: 3, order_in_siblings: 2, is_living: true },
+    { name: "谢明远", gender: 1, birth_year: 1980, birthplace: "待补充", current_location: "广东深圳", occupation: "待补充", bio: "金星丈夫。", generation: 3, order_in_siblings: 3, is_living: true },
+    // 第四代
+    { name: "金氏长女", gender: 2, birth_year: 2010, birthplace: "四川成都", current_location: "四川成都", occupation: "", bio: "金亮长女。", generation: 4, order_in_siblings: 0, is_living: true },
+    { name: "金氏次女", gender: 2, birth_year: 2012, birthplace: "四川成都", current_location: "四川成都", occupation: "", bio: "金亮次女。", generation: 4, order_in_siblings: 1, is_living: true },
+    { name: "谢忻然", gender: 2, birth_year: 2013, birthplace: "广东深圳", current_location: "广东深圳", occupation: "", bio: "金星长女。", generation: 4, order_in_siblings: 0, is_living: true },
+    { name: "谢芮安", gender: 2, birth_year: 2015, birthplace: "广东深圳", current_location: "广东深圳", occupation: "", bio: "金星次女。", generation: 4, order_in_siblings: 1, is_living: true },
+  ]
+};
+
 const FAMILY_TEMPLATES = [
   { name: "金氏家族", origin: "湖北枣阳", description: "聚是一团火，散作满天星" },
   { name: "李氏宗族", origin: "山东济南", description: "忠厚传家久，诗书继世长" },
@@ -115,6 +144,123 @@ export default function OnboardingPage() {
     }, 2000);
   };
 
+  // 导入金氏家族
+  const handleImportJinFamily = async () => {
+    setLoading(true);
+    setError("");
+
+    const { data: { user } } = await createClient().auth.getUser();
+    if (!user) {
+      router.push("/auth/login");
+      return;
+    }
+
+    // 1. 创建家族
+    const { data: family, error: familyError } = await createClient()
+      .from("families")
+      .insert({
+        name: JIN_FAMILY_DATA.name,
+        slug: JIN_FAMILY_DATA.slug,
+        origin: JIN_FAMILY_DATA.origin,
+        description: JIN_FAMILY_DATA.description,
+        admin_id: user.id,
+      })
+      .select()
+      .single();
+
+    if (familyError) {
+      if (familyError.code === "23505") {
+        setError("金氏家族已存在，请直接访问 /f/jin-family");
+      } else {
+        setError(familyError.message);
+      }
+      setLoading(false);
+      return;
+    }
+
+    // 2. 批量创建成员
+    const memberMap = new Map<string, string>(); // name -> id
+    
+    for (const memberData of JIN_FAMILY_DATA.members) {
+      const { data: member, error: memberError } = await createClient()
+        .from("members")
+        .insert({
+          family_id: family.id,
+          name: memberData.name,
+          gender: memberData.gender,
+          birth_year: memberData.birth_year,
+          death_year: (memberData as any).death_year || null,
+          birthplace: memberData.birthplace,
+          current_location: memberData.current_location,
+          occupation: memberData.occupation,
+          bio: memberData.bio,
+          generation: memberData.generation,
+          order_in_siblings: memberData.order_in_siblings,
+          is_living: memberData.is_living,
+          created_by: user.id,
+        })
+        .select()
+        .single();
+
+      if (!memberError && member) {
+        memberMap.set(memberData.name, member.id);
+      }
+    }
+
+    // 3. 更新配偶关系
+    const spousePairs = [
+      ["金如香", "蒋忠英"],
+      ["金道武", "潘云芳"],
+      ["金亮", "周丽娟"],
+      ["金星", "谢明远"],
+    ];
+
+    for (const [name1, name2] of spousePairs) {
+      const id1 = memberMap.get(name1);
+      const id2 = memberMap.get(name2);
+      if (id1 && id2) {
+        await createClient()
+          .from("members")
+          .update({ spouse_id: id2 })
+          .eq("id", id1);
+        await createClient()
+          .from("members")
+          .update({ spouse_id: id1 })
+          .eq("id", id2);
+      }
+    }
+
+    // 4. 更新父子关系
+    const parentChildPairs = [
+      { parent: "金如香", children: ["金道武", "金道富", "金道莲", "金道贵"] },
+      { parent: "金道武", children: ["金亮", "金星"] },
+      { parent: "金亮", children: ["金氏长女", "金氏次女"] },
+      { parent: "金星", children: ["谢忻然", "谢芮安"] },
+    ];
+
+    for (const { parent, children } of parentChildPairs) {
+      const parentId = memberMap.get(parent);
+      if (parentId) {
+        for (const childName of children) {
+          const childId = memberMap.get(childName);
+          if (childId) {
+            await createClient()
+              .from("members")
+              .update({ parent_id: parentId })
+              .eq("id", childId);
+          }
+        }
+      }
+    }
+
+    setStep("done");
+    setLoading(false);
+
+    setTimeout(() => {
+      router.push(`/f/jin-family`);
+    }, 2000);
+  };
+
   const steps: { key: Step; label: string; icon: React.ReactNode }[] = [
     { key: "family", label: "家族信息", icon: <Users className="h-4 w-4" /> },
     { key: "founder", label: "创始人", icon: <UserPlus className="h-4 w-4" /> },
@@ -191,6 +337,30 @@ export default function OnboardingPage() {
                       </div>
                     </button>
                   ))}
+                </div>
+
+                {/* 快速导入 */}
+                <div className="rounded-xl border-2 border-dashed border-[#c8953f]/40 bg-[#c8953f]/5 p-4 mb-6">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-[#c8953f]/20 flex items-center justify-center text-[#c8953f]">
+                        <Sparkles className="h-5 w-5" />
+                      </div>
+                      <div>
+                        <div className="font-medium text-[#5c4a32]">一键导入金氏家族</div>
+                        <div className="text-xs text-[#8a7a65]">
+                          包含4代15人完整数据，含配偶关系
+                        </div>
+                      </div>
+                    </div>
+                    <Button
+                      onClick={handleImportJinFamily}
+                      disabled={loading}
+                      className="bg-[#c8953f] hover:bg-[#b08435] text-white"
+                    >
+                      {loading ? "导入中..." : "立即导入"}
+                    </Button>
+                  </div>
                 </div>
 
                 <div className="space-y-2">
