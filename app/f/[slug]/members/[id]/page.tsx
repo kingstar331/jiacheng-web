@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Edit, User, MapPin, Briefcase, Calendar, Heart, Users } from "lucide-react";
+import { ArrowLeft, Edit, User, MapPin, Briefcase, Calendar, Heart, Users, BookOpen, GraduationCap } from "lucide-react";
 
 export default async function MemberPage({
   params,
@@ -214,6 +214,53 @@ export default async function MemberPage({
             </Card>
           )}
         </div>
+        {/* 故事/回忆 */}
+        {member.stories && (
+          <Card className="border-[#e8e0d4] bg-white mt-6">
+            <CardHeader>
+              <CardTitle className="text-lg text-[#5c4a32] flex items-center gap-2">
+                <BookOpen className="h-5 w-5 text-[#c8953f]" />
+                生平故事 / 回忆
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-6">
+                {(() => {
+                  try {
+                    const stories = JSON.parse(member.stories);
+                    if (!Array.isArray(stories) || stories.length === 0) return null;
+                    
+                    // 按年份排序
+                    const sorted = [...stories].sort((a: any, b: any) => (a.year || 0) - (b.year || 0));
+                    
+                    return sorted.map((story: any, index: number) => (
+                      <div key={index} className="relative pl-6 border-l-2 border-[#c8953f]/30">
+                        {/* 时间轴节点 */}
+                        <div className="absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-[#c8953f]" />
+                        
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-3">
+                            <h3 className="font-medium text-[#5c4a32]">{story.title}</h3>
+                            {story.year && (
+                              <span className="text-xs px-2 py-0.5 rounded-full bg-[#c8953f]/10 text-[#c8953f]">
+                                {story.year}年
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-sm text-[#5c4a32]/80 leading-relaxed whitespace-pre-wrap">
+                            {story.content}
+                          </p>
+                        </div>
+                      </div>
+                    ));
+                  } catch {
+                    return <p className="text-sm text-[#8a7a65]">故事格式错误</p>;
+                  }
+                })()}
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   );
