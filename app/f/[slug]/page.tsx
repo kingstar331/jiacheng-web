@@ -4,7 +4,7 @@ import { FamilyTreeEnhanced } from "./family-tree-enhanced";
 import { MemberList } from "./member-list";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Settings, Share2, Users, Download, Clock, ImageIcon, MapPin, Upload, BarChart3, Bell } from "lucide-react";
+import { Settings, Share2, Users, Download, Clock, ImageIcon, MapPin, Upload, BarChart3, Bell, LogIn, Link2 } from "lucide-react";
 
 export default async function FamilyPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -81,7 +81,13 @@ export default async function FamilyPage({ params }: { params: Promise<{ slug: s
               <Link href={`/f/${slug}/invite`}>
                 <Button variant="ghost" size="sm" className="text-[#8a7a65]">
                   <Share2 className="mr-1 h-4 w-4" />
-                  邀请
+                  邀请协作
+                </Button>
+              </Link>
+              <Link href={`/f/${slug}/share`}>
+                <Button variant="ghost" size="sm" className="text-[#c8953f] border border-[#c8953f]/30">
+                  <Link2 className="mr-1 h-4 w-4" />
+                  分享家族
                 </Button>
               </Link>
               <Link href={`/f/${slug}/export`}>
@@ -99,6 +105,12 @@ export default async function FamilyPage({ params }: { params: Promise<{ slug: s
               <Link href={`/f/${slug}/settings`}>
                 <Button variant="ghost" size="icon" className="text-[#8a7a65]">
                   <Settings className="h-4 w-4" />
+                </Button>
+              </Link>
+              <Link href={`/f/${slug}/family-login`}>
+                <Button variant="ghost" size="sm" className="text-[#c8953f] border border-[#c8953f]/30">
+                  <LogIn className="mr-1 h-4 w-4" />
+                  家属登录
                 </Button>
               </Link>
             </div>
@@ -140,6 +152,11 @@ export default async function FamilyPage({ params }: { params: Promise<{ slug: s
                   <Share2 className="h-5 w-5" />
                 </Button>
               </Link>
+              <Link href={`/f/${slug}/share`}>
+                <Button variant="ghost" size="icon" className="text-[#c8953f] h-9 w-9 border border-[#c8953f]/30">
+                  <Link2 className="h-5 w-5" />
+                </Button>
+              </Link>
               <Link href={`/f/${slug}/export`}>
                 <Button variant="ghost" size="icon" className="text-[#8a7a65] h-9 w-9">
                   <Download className="h-5 w-5" />
@@ -148,6 +165,11 @@ export default async function FamilyPage({ params }: { params: Promise<{ slug: s
               <Link href={`/f/${slug}/import`}>
                 <Button variant="ghost" size="icon" className="text-[#8a7a65] h-9 w-9">
                   <Upload className="h-5 w-5" />
+                </Button>
+              </Link>
+              <Link href={`/f/${slug}/family-login`}>
+                <Button variant="ghost" size="icon" className="text-[#c8953f] h-9 w-9 border border-[#c8953f]/30">
+                  <LogIn className="h-5 w-5" />
                 </Button>
               </Link>
             </div>
